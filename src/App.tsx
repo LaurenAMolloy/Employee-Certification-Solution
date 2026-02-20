@@ -12,11 +12,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CertificateListPage />
+        element: <RequestCertificatePage />
       },
       {
-        path: "/request",
-        element: <RequestCertificatePage />
+        path: "/certificates",
+        element: <CertificateListPage />
       }
     ]
   }

@@ -1,7 +1,10 @@
-import React from 'react'
+import Form from '../../components/Form';
 
 export default function RequestCertificatePage() {
   return (
-    <div>RequestCertificatePage</div>
+    <section>
+      <h1 className='text-2xl font-bold mb-4 py-5 text-center'>Certificate Request Form</h1>
+      <Form />
+    </section>
   )
 }
