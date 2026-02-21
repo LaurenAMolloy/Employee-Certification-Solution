@@ -7,11 +7,10 @@ const APIKEY = import.meta.env.VITE_SUBMISSION_API_KEY;
 export default function CertificateForm() {
     //Success message
     const[success, setSuccess] = useState(false);
-    //Disable submit button until form is valid
-    const[isDisabled, setIsDisabled] = useState(true);
     //State to hold form errors
     //Something like this employeeId: ["Employee ID must be a number"],
     const[errors, setErrors] = useState<Record<string, string[]>>({})
+    
 
     type CertificateFormData = {
         addressTo: string;
@@ -58,28 +57,28 @@ export default function CertificateForm() {
     })
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const updated = {
-            ...certificate,
-            [e.currentTarget.name]: e.currentTarget.value
-        }
+       const { name, value} = e.currentTarget
 
-        setCertificate(updated);
-
-        const result = certificateSchema.safeParse(updated);
-        
-        if (!result.success) {
-            const flattened = result.error.flatten();
-            setErrors(flattened.fieldErrors ?? {});
-            setIsDisabled(true);
-            } else {
-            setErrors({})
-            setIsDisabled(false);
-        }
-         
+       setCertificate((prev) => ({
+        ...prev,
+        [name]: value
+       }))
+    
     }
+
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        const result = certificateSchema.safeParse(certificate);
+
+        if (!result.success) {
+            const flattened = result.error.flatten();
+            setErrors(flattened.fieldErrors ?? {}); 
+            return;
+        } else {
+            setErrors({});
+        }
         
         //Changing case to match API
         const apiPayload = {
@@ -103,7 +102,6 @@ export default function CertificateForm() {
         if(!response.ok) {
             const errorData = await response.json();
             console.error("API Error:", errorData);
-            alert("There was an error submitting your request. Please try again.");
             return;
         }
 
@@ -138,7 +136,7 @@ export default function CertificateForm() {
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {errors.addressTo?.[0] && <p>{errors.addressTo[0]}</p>}
+        {errors.addressTo?.[0] && <p className='text-red-500'>{errors.addressTo[0]}</p>}
     
         <label htmlFor="purpose">Purpose</label>
         <textarea 
@@ -149,7 +147,7 @@ export default function CertificateForm() {
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {errors.purpose?.[0] && <p>{errors.purpose[0]}</p>}
+         {errors.purpose?.[0] && <p className='text-red-500'>{errors.purpose[0]}</p>}
 
 
         <label htmlFor="issuedOn">Date</label>
@@ -161,7 +159,7 @@ export default function CertificateForm() {
         onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-        {errors.issuedOn?.[0] && <p>{errors.issuedOn[0]}</p>}
+         {errors.issuedOn?.[0] && <p className='text-red-500'>{errors.issuedOn[0]}</p>}
 
         <label 
         htmlFor="employeeId">Employee Id</label>
@@ -173,21 +171,15 @@ export default function CertificateForm() {
         onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-        {errors.employeeId?.[0] && <p>{errors.employeeId[0]}</p>}
+         {errors.employeeId?.[0] && <p className='text-red-400'>{errors.employeeId[0]}</p>}
         {success && <p className="success-message">Certificate Submitted!!</p>}
-        <button
-            disabled={isDisabled}
-            className={`inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm transition text-center 
-            ${isDisabled 
-            ? "bg-gray-200 cursor-not-allowed" 
-            : "bg-blue-600 hover:bg-blue-700"
-            }`}
-        >
+
+        <button type="submit" className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700 text-center">
         Submit Request
         </button> 
         
         <Link to="/requests" 
-        className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700">View all requests</Link>
+        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 text-center">View all requests</Link>
     </form>
   )
 }
