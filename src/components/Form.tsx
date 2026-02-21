@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { z } from "zod";
@@ -11,6 +10,7 @@ export default function CertificateForm() {
     //Disable submit button until form is valid
     const[isDisabled, setIsDisabled] = useState(true);
     //State to hold form errors
+    //Something like this employeeId: ["Employee ID must be a number"],
     const[errors, setErrors] = useState<Record<string, string[]>>({})
 
     type CertificateFormData = {
@@ -19,7 +19,8 @@ export default function CertificateForm() {
         issuedOn: string;
         employeeId: string;
     }
-
+    
+    //Initial form state
     const[certificate, setCertificate] = useState<CertificateFormData>({
         addressTo: "",
         purpose: "",
@@ -29,7 +30,7 @@ export default function CertificateForm() {
 
     //zod schema
     const certificateSchema = z.object({
-       address_to: z.string()
+       addressTo: z.string()
             .trim()
             .min(1,{ message: "Address is required" }),
 
@@ -56,11 +57,10 @@ export default function CertificateForm() {
             .regex(/^\d+$/, { message: "Employee ID must contain only digits" })
     })
     
-
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const updated = {
             ...certificate,
-            [e.target.name]: e.target.value
+            [e.currentTarget.name]: e.currentTarget.value
         }
 
         setCertificate(updated);
@@ -68,25 +68,17 @@ export default function CertificateForm() {
         const result = certificateSchema.safeParse(updated);
         
         if (!result.success) {
-            const formattedErrors = z.treeifyError(result.error);
-            setErrors(formattedErrors.properties ?? {});
+            const flattened = result.error.flatten();
+            setErrors(flattened.fieldErrors ?? {});
             setIsDisabled(true);
             } else {
             setErrors({})
             setIsDisabled(false);
         }
-        // {
-        // errors: [],
-        //     properties: {
-        //         addressTo: { errors: ["Address is required"] },
-        //         purpose: { errors: ["Purpose is required"] },
-        //         issuedOn: { errors: ["Date cannot be in the past"] },
-        //         employeeId: { errors: ["Employee ID must be a number"] }
-        //     }
-        // }  
+         
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
         
         //Changing case to match API
@@ -97,31 +89,41 @@ export default function CertificateForm() {
             employee_id: certificate.employeeId
         }
 
-        const response = await fetch(' https://zalexinc.azure-api.net/request-certificate?subscription-key=apiKey', {
-            Authentication: APIKEY
-            method: "POST",
-            //We are sending JSON!
-            headers: {
-            "Content-Type": "application/json"
-            },
-            body: JSON.stringify(apiPayload)
-        })
+        try {
+             const response = await fetch(`https://zalexinc.azure-api.net/request-certificate?subscription-key=${APIKEY}`,
+            {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify(apiPayload)
+            }
+        );
+
+        if(!response.ok) {
+            const errorData = await response.json();
+            console.error("API Error:", errorData);
+            alert("There was an error submitting your request. Please try again.");
+            return;
+        }
 
         const data = await response.json();
         console.log(data)
-        //show success message!
+        
+        setSuccess(true);
         setCertificate({
-            address_to: "",
+            addressTo: "",
             purpose: "",
-            issued_on: "",
-            employee_id: ""
+            issuedOn: "",
+            employeeId: ""
         })
         
         setTimeout(() => setSuccess(false), 4000);
-        if(response.ok) {
-          setSuccess(true);
-        }   
+         
+    } catch (error) {
+        console.error("Network Error:", error);
     }
+}
 
   return (
     <form 
@@ -131,15 +133,13 @@ export default function CertificateForm() {
         <textarea 
         name="addressTo" 
         id="addressTo" 
-        value={certificate.address_to}
+        value={certificate.addressTo}
         onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2"
-        required>
+        >
         </textarea>
-        {errors.address_to?.errors?.[0] && (
-            <p className='error'>{errors.address_to.errors[0]}</p>
-        )}
-
+        {errors.addressTo?.[0] && <p>{errors.addressTo[0]}</p>}
+    
         <label htmlFor="purpose">Purpose</label>
         <textarea 
         name="purpose" 
@@ -149,23 +149,19 @@ export default function CertificateForm() {
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {errors.purpose?.errors?.[0] && (
-            <p className='error'>{errors.purpose.errors[0]}</p>
-        )}
+        {errors.purpose?.[0] && <p>{errors.purpose[0]}</p>}
+
 
         <label htmlFor="issuedOn">Date</label>
         <input 
         type="date" 
         id="issuedOn" 
         name="issuedOn"
-        value={certificate.issued_on}
+        value={certificate.issuedOn}
         onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
-        
         </input>
-        {errors.issued_on?.errors?.[0] && (
-            <p className='error'>{errors.issued.errors[0]}</p>
-        )}
+        {errors.issuedOn?.[0] && <p>{errors.issuedOn[0]}</p>}
 
         <label 
         htmlFor="employeeId">Employee Id</label>
@@ -173,17 +169,23 @@ export default function CertificateForm() {
         type="text" 
         id="employeeId" 
         name="employeeId"
-        value={certificate.employee_id}
+        value={certificate.employeeId}
         onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-         {errors.employee_id?.errors?.[0] && (
-            <p className='error'>{errors.employee_id.errors[0]}</p>
-        )}
-
+        {errors.employeeId?.[0] && <p>{errors.employeeId[0]}</p>}
         {success && <p className="success-message">Certificate Submitted!!</p>}
+        <button
+            disabled={isDisabled}
+            className={`inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm transition text-center 
+            ${isDisabled 
+            ? "bg-gray-200 cursor-not-allowed" 
+            : "bg-blue-600 hover:bg-blue-700"
+            }`}
+        >
+        Submit Request
+        </button> 
         
-        <button disabled={isDisabled} className={isDisabled ? "button-primary:disabled" : "disabled" }>Submit Request</button>
         <Link to="/requests" 
         className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700">View all requests</Link>
     </form>
