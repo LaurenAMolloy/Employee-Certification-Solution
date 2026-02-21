@@ -26,4 +26,8 @@
 
 ---
 
-## 📌 Future Improvements
+## 📌 Resources
+
+- Article for getting started with [TanStack Table] (https://blog.logrocket.com/tanstack-table-formerly-react-table/#adding=sorting=with=getsortedrowmodel)
+
+- Currently there is a conflict with [React Compiler](https://github.com/facebook/react/issues/33057) and Tanstack table that is worth noting for future improvements.

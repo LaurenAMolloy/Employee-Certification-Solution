@@ -8,10 +8,8 @@ import {
 } from "@tanstack/react-table";
 import { FaArrowsAltV, FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 
-
-
 import { useState } from "react";
-import { FiArrowDown, FiArrowUp } from "react-icons/fi";
+
 
 //Columns and data use the same object type
 interface TableProps<T extends object> {
@@ -49,9 +47,9 @@ export default function Table<T>({ columns, certificates }: TableProps<T>) {
 
                 if(canSort){
                   if(isSorted === "asc"){
-                    icon = <FiArrowUp className="inline ml-1" />
+                    icon = <FaLongArrowAltUp className="inline ml-1" />
                   } else if(isSorted === "desc"){
-                    icon = <FiArrowDown className="inline ml-1" />
+                    icon = <FaLongArrowAltDown className="inline ml-1" />
                   } else {
                     icon = <FaArrowsAltV className="inline ml-1 text-gray-400" />
                   }
