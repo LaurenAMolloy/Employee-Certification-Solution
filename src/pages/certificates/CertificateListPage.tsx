@@ -16,24 +16,29 @@ export default function CertificateListPage() {
         columnHelper.accessor("reference_no", {
           header: "Reference No.",
           cell: (info) => info.getValue(),
+          enableSorting: false, 
         }),
         //Must match object key!
         columnHelper.accessor("address_to", {
           //Define header and cell content
           header: "Address To",
           cell: (info) => info.getValue(),
+          enableSorting: false, 
         }),
         columnHelper.accessor("purpose", {
           header: "Purpose",
           cell: (info) => info.getValue(),
+          enableSorting: false, 
         }),
         columnHelper.accessor("issued_on", {
           header: "Issued On",
           cell: (info) => info.getValue(),
+          enableSorting: true,
         }),
         columnHelper.accessor("status", {
           header: "Status",
           cell: (info) => info.getValue(),
+          enableSorting: true,
         }),
     ],[]);
      

@@ -3,7 +3,15 @@ import {
   getCoreRowModel,
   useReactTable,
   type ColumnDef,
+  type SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
+import { FaArrowsAltV, FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+
+
+
+import { useState } from "react";
+import { FiArrowDown, FiArrowUp } from "react-icons/fi";
 
 //Columns and data use the same object type
 interface TableProps<T extends object> {
@@ -12,11 +20,19 @@ interface TableProps<T extends object> {
 }
 
 export default function Table<T>({ columns, certificates }: TableProps<T>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  
   const table = useReactTable({
   data: certificates ?? [],
   columns,
   getCoreRowModel: getCoreRowModel(),
-});
+  //Sorting row model
+  onSortingChange: setSorting,
+  getSortedRowModel: getSortedRowModel(),
+  state: {
+    sorting,
+  }
+  });
 
   return (
     <div>
@@ -25,14 +41,43 @@ export default function Table<T>({ columns, certificates }: TableProps<T>) {
           {/*use the getHeaderGRoup function to render headers:*/}
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className="px-4 py-4">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const isSorted = header.column.getIsSorted();
+                const canSort = header.column.getCanSort();
+
+                let icon = null;
+
+                if(canSort){
+                  if(isSorted === "asc"){
+                    icon = <FiArrowUp className="inline ml-1" />
+                  } else if(isSorted === "desc"){
+                    icon = <FiArrowDown className="inline ml-1" />
+                  } else {
+                    icon = <FaArrowsAltV className="inline ml-1 text-gray-400" />
+                  }
+                }
+                return (
+                  <th key={header.id} className="px-4 py-4">
+                  {header.isPlaceholder ? null : (
+                  <div
+                  onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
+                  className={canSort ? "cursor-pointer select-none" : ""}
+                  >
+                  {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext()
+                  )}
+                {icon}
+              </div>
+            )}
+          </th>
+
+                );
+              })}
             </tr>
           ))}
         </thead>
+        {/* //TableBody */}
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id} className="border-b border-gray-200">
