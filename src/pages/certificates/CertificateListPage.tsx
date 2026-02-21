@@ -33,6 +33,11 @@ export default function CertificateListPage() {
         columnHelper.accessor("issued_on", {
           header: "Issued On",
           cell: (info) => info.getValue(),
+          sortingFn: (rowA, rowB, columnId) => {
+          const dateA = new Date(rowA.getValue(columnId) as string).getTime();
+          const dateB = new Date(rowB.getValue(columnId) as string).getTime();
+          return dateA - dateB;
+        },
           enableSorting: true,
         }),
         columnHelper.accessor("status", {
