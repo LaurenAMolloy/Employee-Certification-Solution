@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { z } from "zod";
 
-const APIKEY = import.meta.env.VITE_SUBMISSION_API_KEY;
 
 export default function CertificateForm() {
     //Success message
@@ -80,34 +79,6 @@ export default function CertificateForm() {
             setErrors({});
         }
         
-        //Changing case to match API
-        const apiPayload = {
-            address_to: certificate.addressTo,
-            purpose: certificate.purpose,
-            issued_on: certificate.issuedOn,
-            employee_id: certificate.employeeId
-        }
-
-        try {
-             const response = await fetch(`https://zalexinc.azure-api.net/request-certificate?subscription-key=${APIKEY}`,
-            {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json"
-                },
-                body: JSON.stringify(apiPayload)
-            }
-        );
-
-        if(!response.ok) {
-            const errorData = await response.json();
-            console.error("API Error:", errorData);
-            return;
-        }
-
-        const data = await response.json();
-        console.log(data)
-        
         setSuccess(true);
         setCertificate({
             addressTo: "",
@@ -117,14 +88,10 @@ export default function CertificateForm() {
         })
         
         setTimeout(() => setSuccess(false), 4000);
-         
-    } catch (error) {
-        console.error("Network Error:", error);
-    }
 }
 
   return (
-    <form 
+    <form method="post"
     className="flex flex-col space-y-4 p-6 rounded-lg shadow-md max-w-md mx-auto" 
     onSubmit={handleSubmit}>
         <label htmlFor='addressTo'>Address To</label>
