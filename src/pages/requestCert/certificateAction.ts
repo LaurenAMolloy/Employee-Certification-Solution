@@ -1,12 +1,13 @@
 import type { ActionFunctionArgs } from 'react-router-dom';
 import { createCertificate } from '../../api/mutations/createCertificate';
 import { certificateSchema } from './schema';
-import type { CreateCertificateApiInput } from '../../api/types/CreateCertificateApiInput';
+import type { CreateCertificateApiInput } from '../../api/types/createCertificateApiInput';
 
 export default async function certificateAction({ request }: ActionFunctionArgs) {
     try {
         const formData = await request.formData();
-
+        
+        //Safe parse needs a plain object
         const rawData = {
         addressTo: formData.get("addressTo")?.toString() || "",
         purpose: formData.get("purpose")?.toString() || "",
@@ -27,6 +28,7 @@ export default async function certificateAction({ request }: ActionFunctionArgs)
         }
 
         const validData = result.data;
+        console.log("Valid Data:", validData)
 
         const apiPayload: CreateCertificateApiInput = {
         address_to: validData.addressTo,

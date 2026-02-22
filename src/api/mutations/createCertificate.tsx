@@ -1,5 +1,5 @@
 import type { Certificate } from "../types/certificate";
-import type { CreateCertificateApiInput } from '../types/CreateCertificateApiInput';
+import type { CreateCertificateApiInput } from '../types/createCertificateApiInput';
 
 const APIKEY = import.meta.env.VITE_SUBMISSION_API_KEY;
  

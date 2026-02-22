@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, useActionData, useNavigation} from 'react-router-dom';
+import React from 'react';
 
 export default function CertificateForm() {
 
@@ -9,9 +11,18 @@ export default function CertificateForm() {
     //Capture the routing state to determine if the form is currently submitting
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
+    const formRef = React.useRef<HTMLFormElement>(null);
+
+    useEffect(() => {
+        if(success && formRef.current) {
+            formRef.current.reset();
+        }
+    }, [success])
 
   return (
-    <Form method="post"
+    <Form 
+    ref={formRef}
+    method="post"
     className="flex flex-col space-y-4 p-6 rounded-lg shadow-md max-w-md mx-auto" 
     >
         <label htmlFor='addressTo'>Address To</label>
