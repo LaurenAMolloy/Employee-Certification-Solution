@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Form, useActionData, useNavigation} from 'react-router-dom';
 
-
 export default function CertificateForm() {
 
-    const actionData = useActionData<typeof certificateAction>();
+    const actionData = useActionData();
+    const errors = actionData?.errors;
+    const success = actionData?.success;
+    //Capture the routing state to determine if the form is currently submitting
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
 
@@ -19,9 +21,9 @@ export default function CertificateForm() {
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {actionData?.errors?.addressTo?.[0] && (
+        {errors?.addressTo?.[0] && (
           <p className='text-red-500'>
-            {actionData.errors.addressTo[0]}</p>
+            {errors.addressTo[0]}</p>
         )}
     
         <label htmlFor="purpose">Purpose</label>
@@ -31,8 +33,8 @@ export default function CertificateForm() {
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {actionData?.errors?.purpose?.[0] && (
-          <p className='text-red-500'>{actionData.errors.purpose[0]}</p>
+        {errors?.purpose?.[0] && (
+          <p className='text-red-500'>{errors.purpose[0]}</p>
         )}
 
         <label htmlFor="issuedOn">Date</label>
@@ -42,8 +44,8 @@ export default function CertificateForm() {
         name="issuedOn"
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-        {actionData?.errors?.issuedOn?.[0] && (
-          <p className='text-red-500'>{actionData.issuedOn[0]}</p>
+        {errors?.issuedOn?.[0] && (
+          <p className='text-red-500'>{errors.issuedOn[0]}</p>
         )}
         <label 
         htmlFor="employeeId">Employee Id</label>
@@ -53,10 +55,10 @@ export default function CertificateForm() {
         name="employeeId"
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-         {actionData?.errors?.employeeId?.[0] && (
-          <p className='text-red-400'>{actionData.errors.employeeId[0]}</p>
+         {errors?.employeeId?.[0] && (
+          <p className='text-red-400'>{errors.employeeId[0]}</p>
         )}
-         {actionData?.success && <p className="success-message">Certificate Submitted!!</p>}
+         {success && <p className="text-green-500">Certificate Submitted!!</p>}
 
         <button 
         disabled={isSubmitting}

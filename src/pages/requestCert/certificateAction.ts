@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs } from 'react-router-dom';
 import { createCertificate } from '../../api/mutations/createCertificate';
 import { certificateSchema } from './schema';
+import type { CreateCertificateApiInput } from '../../api/types/CreateCertificateApiInput';
 
 export default async function certificateAction({ request }: ActionFunctionArgs) {
     try {
@@ -12,7 +13,8 @@ export default async function certificateAction({ request }: ActionFunctionArgs)
         issuedOn: formData.get("issuedOn")?.toString() || "",
         employeeId: formData.get("employeeId")?.toString() || "",
         };
-
+        
+        //safeParse will validate the data and return either the valid data or the errors, we can use this to ensure we are sending correct data to the API and also to display errors to the user if the validation fails
         const result = certificateSchema.safeParse(rawData)
 
         if(!result.success) {
@@ -26,12 +28,14 @@ export default async function certificateAction({ request }: ActionFunctionArgs)
 
         const validData = result.data;
 
-        await createCertificate({
+        const apiPayload: CreateCertificateApiInput = {
         address_to: validData.addressTo,
         purpose: validData.purpose,
         issued_on: validData.issuedOn,
         employee_id: validData.employeeId,
-        });
+        };
+
+        await createCertificate(apiPayload)
 
         return {
             success: true,
