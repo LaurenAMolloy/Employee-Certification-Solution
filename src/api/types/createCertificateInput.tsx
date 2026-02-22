@@ -1,5 +1,5 @@
 export interface createCertificateInput{
-    adrressTo: string;
+    addressTo: string;
     purpose: string;
     issuedOn:string;
     employeeId: string;

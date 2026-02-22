@@ -1,152 +1,72 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { z } from "zod";
+import { Form, useActionData, useNavigation} from 'react-router-dom';
 
 
 export default function CertificateForm() {
-    //Success message
-    const[success, setSuccess] = useState(false);
-    //State to hold form errors
-    //Something like this employeeId: ["Employee ID must be a number"],
-    const[errors, setErrors] = useState<Record<string, string[]>>({})
-    
 
-    type CertificateFormData = {
-        addressTo: string;
-        purpose: string;
-        issuedOn: string;
-        employeeId: string;
-    }
-    
-    //Initial form state
-    const[certificate, setCertificate] = useState<CertificateFormData>({
-        addressTo: "",
-        purpose: "",
-        issuedOn: "",
-        employeeId: ""
-    })
-
-    //zod schema
-    const certificateSchema = z.object({
-       addressTo: z.string()
-            .trim()
-            .min(1,{ message: "Address is required" }),
-
-       purpose: z.string()
-            .trim()
-            .min(1, { message: "Purpose is required" } ),
-
-       issuedOn: z.string()
-            .trim()
-            .min(1, { message: "Issued date is required!" })
-            .refine((date) => {
-             const parsedDate = new Date(date);
-             const today = new Date();
-             today.setHours(0, 0, 0, 0);
-             return parsedDate >= today;
-            }, {
-          message: "Issued date cannot be in the past",
-        }),
-
-       employeeId: z.string()
-            .trim()
-            .min(1, { message: "Employee ID is required" })
-            //Regex = string, digit plus 1 end of string
-            .regex(/^\d+$/, { message: "Employee ID must contain only digits" })
-    })
-    
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-       const { name, value} = e.currentTarget
-
-       setCertificate((prev) => ({
-        ...prev,
-        [name]: value
-       }))
-    
-    }
-
-
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        const result = certificateSchema.safeParse(certificate);
-
-        if (!result.success) {
-            const flattened = result.error.flatten();
-            setErrors(flattened.fieldErrors ?? {}); 
-            return;
-        } else {
-            setErrors({});
-        }
-        
-        setSuccess(true);
-        setCertificate({
-            addressTo: "",
-            purpose: "",
-            issuedOn: "",
-            employeeId: ""
-        })
-        
-        setTimeout(() => setSuccess(false), 4000);
-}
+    const actionData = useActionData<typeof certificateAction>();
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
 
   return (
-    <form method="post"
+    <Form method="post"
     className="flex flex-col space-y-4 p-6 rounded-lg shadow-md max-w-md mx-auto" 
-    onSubmit={handleSubmit}>
+    >
         <label htmlFor='addressTo'>Address To</label>
         <textarea 
         name="addressTo" 
         id="addressTo" 
-        value={certificate.addressTo}
-        onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-        {errors.addressTo?.[0] && <p className='text-red-500'>{errors.addressTo[0]}</p>}
+        {actionData?.errors?.addressTo?.[0] && (
+          <p className='text-red-500'>
+            {actionData.errors.addressTo[0]}</p>
+        )}
     
         <label htmlFor="purpose">Purpose</label>
         <textarea 
         name="purpose" 
         id="purpose"
-        value={certificate.purpose}
-        onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2"
         >
         </textarea>
-         {errors.purpose?.[0] && <p className='text-red-500'>{errors.purpose[0]}</p>}
-
+        {actionData?.errors?.purpose?.[0] && (
+          <p className='text-red-500'>{actionData.errors.purpose[0]}</p>
+        )}
 
         <label htmlFor="issuedOn">Date</label>
         <input 
         type="date" 
         id="issuedOn" 
         name="issuedOn"
-        value={certificate.issuedOn}
-        onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-         {errors.issuedOn?.[0] && <p className='text-red-500'>{errors.issuedOn[0]}</p>}
-
+        {actionData?.errors?.issuedOn?.[0] && (
+          <p className='text-red-500'>{actionData.issuedOn[0]}</p>
+        )}
         <label 
         htmlFor="employeeId">Employee Id</label>
         <input 
         type="text" 
         id="employeeId" 
         name="employeeId"
-        value={certificate.employeeId}
-        onChange={handleChange}
         className="border-gray-200 border-2 rounded-md p-2">
         </input>
-         {errors.employeeId?.[0] && <p className='text-red-400'>{errors.employeeId[0]}</p>}
-        {success && <p className="success-message">Certificate Submitted!!</p>}
+         {actionData?.errors?.employeeId?.[0] && (
+          <p className='text-red-400'>{actionData.errors.employeeId[0]}</p>
+        )}
+         {actionData?.success && <p className="success-message">Certificate Submitted!!</p>}
 
-        <button type="submit" className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700 text-center">
-        Submit Request
+        <button 
+        disabled={isSubmitting}
+        type="submit"
+        className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700 text-center">
+         { isSubmitting ? "Submitting..." : "Submit Request"}
         </button> 
-        
+
         <Link to="/requests" 
         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 text-center">View all requests</Link>
-    </form>
+    </Form>
   )
 }

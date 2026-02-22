@@ -3,7 +3,7 @@ import Root from './pages/Root';
 import RequestCertificatePage from './pages/requestCert/RequestCertificatePage';
 import CertificateListPage from './pages/certificates/CertificateListPage';
 import certificatesListLoader from './pages/certificates/certificatesListLoader';
-import { createCertificateAction } from './api/mutations/createCertificate';
+import  certificateAction from './pages/requestCert/certificateAction';
 
 //Set up Router and Paths
 const router = createBrowserRouter([
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <RequestCertificatePage />,
-        action: createCertificateAction
+        action: certificateAction,
       },
       {
         path: "/certificates",
