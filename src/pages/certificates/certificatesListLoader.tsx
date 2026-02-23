@@ -7,14 +7,11 @@ export interface CertificateListLoaderResult {
 }
 
 export default async function certificatesListLoader(): Promise<CertificateListLoaderResult> {
-  try {
     const certificates = await getCertificates();
-    console.log(certificates);
-    return { certificates };
 
-  } catch (error) {
-    console.error("Error fetching certificates:", error);
-    return { certificates: [] }; 
-  }
- 
+    if(!certificates ||certificates.length === 0) {
+        throw new Response("No certificates found", { status: 404 });
+    } 
+
+    return { certificates } ;  
 }

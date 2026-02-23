@@ -18,12 +18,10 @@ export async function createCertificate(
         );
 
         if(!response.ok) {
-            //This will be any so we need to type it as an error response
-            const errorData = await response.json();
-            console.error("API Error:", errorData);
+            console.error("API Error:", response.status, response.statusText);
+            throw new Error(`API Error: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log(data)
         return data as Certificate;
 }

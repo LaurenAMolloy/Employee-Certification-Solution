@@ -4,7 +4,6 @@ import { Form, useActionData, useNavigation} from 'react-router-dom';
 import React from 'react';
 
 export default function CertificateForm() {
-
     const actionData = useActionData();
     const errors = actionData?.errors;
     const success = actionData?.success;

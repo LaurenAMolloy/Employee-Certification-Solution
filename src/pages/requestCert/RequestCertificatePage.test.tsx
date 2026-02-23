@@ -5,7 +5,7 @@ import {
     waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Form from "../../components/Form";
+import Form from "../../components/CertificateForm";
 import { test } from "vitest";
 
 //When the form submits
@@ -44,10 +44,10 @@ test("Request form shows errors on submit",  async () => {
     await userEvent.click(screen.getByRole("button", { name: /submit request/i }));
 
     //assertions
-    waitFor(() => screen.findByText(ADDRESS_MESSAGE));
-    waitFor(() => screen.findByText(PURPOSE_MESSAGE));
-    waitFor(() => screen.findByText(DATE_MESSAGE));
-    waitFor(() => screen.findByText(EMPLOYEE_ID_MESSAGE));
+    await waitFor(() => screen.findByText(ADDRESS_MESSAGE));
+    await waitFor(() => screen.findByText(PURPOSE_MESSAGE));
+    await waitFor(() => screen.findByText(DATE_MESSAGE));
+    await waitFor(() => screen.findByText(EMPLOYEE_ID_MESSAGE));
 })
 
 
