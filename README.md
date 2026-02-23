@@ -170,7 +170,6 @@ While one test has been implemeted, coverage can be improved.
 ### Planned Improvements
 
 - Add unit tests for the `Table` component
-- Increase integration tests for page-level behavior
 
 ---
 
@@ -184,8 +183,6 @@ To improve test reliability and isolation, we plan to integrate:
 
 - Mock network requests during development and testing
 - Avoid hitting real APIs during tests
-- Simulate error states and edge cases
-- Enable consistent CI test environments
 
 This will allow more realistic integration tests without relying on external services.
 
@@ -214,7 +211,6 @@ The proxy server will:
 
 - Store API keys securely in environment variables
 - Forward authenticated requests to third-party APIs
-- Validate incoming client requests
 
 This ensures security best practices are followed in a production environment.
 
