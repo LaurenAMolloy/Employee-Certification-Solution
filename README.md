@@ -40,8 +40,6 @@ cd Employee-Certificate-Solution
 
 ## 2️⃣ Install Dependencies
 
-## 2️⃣ Install Dependencies
-
 ```bash
 npm install
 ```
