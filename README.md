@@ -2,7 +2,7 @@
 
 ## An MVP single-page application built with **React**.
 
-## Form Walkthrough**.
+## Form Walkthrough.
 
 
 
