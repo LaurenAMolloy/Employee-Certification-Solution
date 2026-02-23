@@ -2,16 +2,28 @@
 
 ## An MVP single-page application built with **React**.
 
+## Form Walkthrough**.
+
+
+
+https://github.com/user-attachments/assets/74d5d176-bdd2-41b1-a02e-b51f26e9f0cd
+
+
 ## ✨ Features
 
-- Client-side routing with **React Router**
-- Data loading using **React Router loaders**
-- Data loading using **React Router loaders**
-- Form validation with **Zod**
-- Sortable table using **Tanstack Table**
-- Strongly typed application using **TypeScript**
-- Fully client-side single-page application (SPA)
-- unit tests (in progress)
+- Client-side routing with React Router
+
+- Data loading via React Router loaders
+
+- Form validation using Zod
+
+- Sortable data table powered by TanStack Table
+
+- Strongly typed application using TypeScript
+
+- Fully client-side SPA architecture
+
+- Unit testing with Vitest and React Testing Library (in progress)
 
 ---
 
@@ -49,7 +61,7 @@ npm install
 ## 3️⃣ Environment Setup
 
 ```bash
-cd /.env
+cp .env.example .env
 ```
 
 Update `/.env.example`:
@@ -70,7 +82,7 @@ npm run dev
 Runs at:
 
 ```
-http://localhost:5173
+http://localhost:3000
 ```
 
 ---
