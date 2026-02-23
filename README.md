@@ -139,7 +139,6 @@ Currently, the application does not implement:
 
 - React Error Boundaries
 - Route-level `errorElement` handling (React Router)
-- Global API error interception
 
 ### Planned Enhancements
 
@@ -189,10 +188,7 @@ For production deployment, a backend proxy server will be introduced.
 ### Why This Is Important
 
 - Prevent exposing API keys in the browser
-- Secure secret tokens
-- Handle authentication securely
-- Enable rate limiting and request validation
-- Provide a centralized API layer
+- Secure secrets
 
 ### Planned Architecture
 
