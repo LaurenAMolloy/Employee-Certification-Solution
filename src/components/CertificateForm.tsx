@@ -77,7 +77,7 @@ export default function CertificateForm() {
          { isSubmitting ? "Submitting..." : "Submit Request"}
         </button> 
 
-        <Link to="/requests" 
+        <Link to="/certificates" 
         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 text-center">View all requests</Link>
     </Form>
   )
